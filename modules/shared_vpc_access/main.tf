@@ -95,6 +95,13 @@ resource "google_project_iam_member" "gke_host_agent" {
   role    = "roles/container.hostServiceAgentUser"
   member  = format("serviceAccount:%s", local.apis["container.googleapis.com"])
 }
+    
+resource "google_project_iam_member" "gke_host_agent" {
+  count   = local.gke_shared_vpc_enabled && var.enable_shared_vpc_service_project && var.grant_services_network_role ? 1 : 0
+  project = var.host_project_id
+  role    = "roles/container.hostServiceAgentUser"
+  member  = format("serviceAccount:%s", local.apis["container.googleapis.com"])
+}
 
 /******************************************
   roles/compute.securityAdmin role granted to GKE service account for GKE on shared VPC host project
